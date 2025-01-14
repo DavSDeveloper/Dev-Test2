@@ -17,8 +17,6 @@ const Companies = () => {
 
   if (error) return <p>Error: {error.message}</p>;
 
-  console.log(data);
-
   const companies = data.me.companies.edges.map(({ node }) => node);
 
   return (

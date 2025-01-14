@@ -13,6 +13,8 @@ export const ME_QUERY = gql`
             id
             name
             default
+            importedFilesCount
+            created
           }
         }
       }
