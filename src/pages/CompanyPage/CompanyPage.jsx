@@ -8,7 +8,7 @@ const CompanyPage = () => {
 
   const [file, setFile] = useState(null);
 
-  // TODO In the state set null when there is no CORS blocking
+  // TODO - In the state set null when there is no CORS blocking
   const [analysisResult, setAnalysisResult] = useState({
     category: "ELECTRONIC_INVOICE",
     data: {
@@ -52,7 +52,7 @@ const CompanyPage = () => {
   const handleUpload = async () => {
     if (!file) return alert("Please select a file to upload.");
 
-    // TODO Remove this line when there is no CORS blocking
+    // TODO - Remove this line when there is no CORS blocking
     setModalOpen(true);
 
     try {

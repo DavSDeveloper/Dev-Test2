@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { IoMdInformationCircle } from "react-icons/io";
 
 const CompanyList = ({ companies }) => {
-
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [companyName, setCompanyName] = useState({});
+  const debounceRef = useRef(null);
 
   if (!companies || companies.length === 0) {
     return (
@@ -25,19 +26,21 @@ const CompanyList = ({ companies }) => {
     );
   }
 
-  const filteredCompanies = (e) => {
-    setSearch(e.target.value);
-  };
+  // TODO - For dynamic search implementation, uncomment the following code
 
-  let results = [];
+  // const filteredCompanies = (e) => {
+  //   setSearch(e.target.value);
+  // };
 
-  if (search.length === 0) {
-    results = companies;
-  } else {
-    results = companies.filter((company) => {
-      return company.name.toLowerCase().includes(search.toLowerCase());
-    });
-  }
+  // let results = [];
+
+  // if (search.length === 0) {
+  //   results = companies;
+  // } else {
+  //   results = companies.filter((company) => {
+  //     return company.name.toLowerCase().includes(search.toLowerCase());
+  //   });
+  // }
 
   const information = (company) => {
     let created = new Date(company.created).toLocaleString("es-CO", {
@@ -59,6 +62,34 @@ const CompanyList = ({ companies }) => {
     }
   };
 
+  const filteredCompanies = (e) => {
+    setSearch(e.target.value);
+  };
+
+  useEffect(() => {
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(debounceRef.current);
+  }, [search]);
+
+  let results = [];
+
+  if (debouncedSearch.length === 0) {
+    results = companies;
+  } else {
+    results = companies.filter((company) => {
+      return company.name.toLowerCase().includes(debouncedSearch.toLowerCase());
+    });
+  }
+
+  // TODO - For dynamic search implementation, place the following properties in the search input element
+  /**
+   * value={search}
+   * onChange={filteredCompanies}
+   */
   return (
     <>
       <h1 className="w-full py-9 text-center text-2xl font-bold text-blue-500">
@@ -66,9 +97,9 @@ const CompanyList = ({ companies }) => {
       </h1>
       <div className="flex justify-center">
         <input
+          type="text"
           value={search}
           onChange={filteredCompanies}
-          type="text"
           placeholder="Search companies..."
           className="w-full p-4 mx-10 mb-5 border-2 bg-slate-50 border-blue-500 rounded-md text-lg hover:bg-slate-100 shadow duration-300"
         />
