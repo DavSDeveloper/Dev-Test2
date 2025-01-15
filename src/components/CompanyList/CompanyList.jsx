@@ -1,12 +1,9 @@
-import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { MdOutlineEdit } from "react-icons/md";
-import { IoMdInformationCircle } from "react-icons/io";
+import CompanyItem from "../CompanyItem/CompanyItem";
 
 const CompanyList = ({ companies }) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [companyName, setCompanyName] = useState({});
   const debounceRef = useRef(null);
 
   if (!companies || companies.length === 0) {
@@ -41,26 +38,6 @@ const CompanyList = ({ companies }) => {
   //     return company.name.toLowerCase().includes(search.toLowerCase());
   //   });
   // }
-
-  const information = (company) => {
-    let created = new Date(company.created).toLocaleString("es-CO", {
-      timeZone: "America/Bogota",
-    });
-    alert(
-      `Created: ${created}` +
-        `\nNumber of files uploaded: ${company.importedFilesCount}`
-    );
-  };
-
-  const edit = (id, currentName) => {
-    const newName = prompt("Enter the new name of the company", currentName);
-    if (newName) {
-      setCompanyName((prev) => ({
-        ...prev,
-        [id]: newName,
-      }));
-    }
-  };
 
   const filteredCompanies = (e) => {
     setSearch(e.target.value);
@@ -106,31 +83,33 @@ const CompanyList = ({ companies }) => {
       </div>
       <ul className="list-none p-0 my-5 mx-10">
         {results.map((company) => (
-          <li
-            key={company.id}
-            className="flex items-center justify-between my-3 p-3 border-2 border-slate-200 rounded-md hover:bg-slate-100 shadow duration-300"
-          >
-            <Link
-              to={`/companies/${company.id}`}
-              className="text-blue-500 font-semibold text-lg hover:text-blue-800 duration-300"
-            >
-              {companyName[company.id] || company.name}
-            </Link>
-            <div className="flex items-center gap-3">
-              <button
-                className="px-4 py-1 border-2 rounded-md bg-blue-500 hover:bg-blue-700 duration-300 cursor-pointer"
-                onClick={() => information(company)}
-              >
-                <IoMdInformationCircle className="text-white" />
-              </button>
-              <button
-                className="px-4 py-1 border-2 rounded-md bg-blue-500 hover:bg-blue-700 duration-300 cursor-pointer"
-                onClick={() => edit(company.id, company.name)}
-              >
-                <MdOutlineEdit className="text-white" />
-              </button>
-            </div>
-          </li>
+          // TODO - Here was the list of items (companies)
+          // <li
+          //   key={company.id}
+          //   className="flex items-center justify-between my-3 p-3 border-2 border-slate-200 rounded-md hover:bg-slate-100 shadow duration-300"
+          // >
+          //   <Link
+          //     to={`/companies/${company.id}`}
+          //     className="text-blue-500 font-semibold text-lg hover:text-blue-800 duration-300"
+          //   >
+          //     {companyName[company.id] || company.name}
+          //   </Link>
+          //   <div className="flex items-center gap-3">
+          //     <button
+          //       className="px-4 py-1 border-2 rounded-md bg-blue-500 hover:bg-blue-700 duration-300 cursor-pointer"
+          //       onClick={() => information(company)}
+          //     >
+          //       <IoMdInformationCircle className="text-white" />
+          //     </button>
+          //     <button
+          //       className="px-4 py-1 border-2 rounded-md bg-blue-500 hover:bg-blue-700 duration-300 cursor-pointer"
+          //       onClick={() => edit(company.id, company.name)}
+          //     >
+          //       <MdOutlineEdit className="text-white" />
+          //     </button>
+          //   </div>
+          // </li>
+          <CompanyItem datos={company} key={company.id} />
         ))}
       </ul>
     </>
