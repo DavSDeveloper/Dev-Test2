@@ -1,36 +1,43 @@
-import Header from "../../components/Header/Header";
+import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { ME_QUERY } from "../../graphql/queries";
+import Header from "../../components/Header/Header";
 import Loader from "../../components/Loader/Loader";
 import CompanyList from "../../components/CompanyList/CompanyList";
 import useAuth from "../../hooks/useAuth";
 
 const Companies = () => {
+  const [companies, setCompanies] = useState([]);
+
   const { logout } = useAuth();
 
-  const { data, loading, error } = useQuery(ME_QUERY, {
+  const { loading, error } = useQuery(ME_QUERY, {
     context: {
       headers: {
         Authorization: `JWT ${localStorage.getItem("token")}`,
       },
     },
+    onCompleted: (data) => {
+      setCompanies(data.me.companies.edges);
+    },
   });
 
-  if (loading) return <Loader />;
+  useEffect(() => {
+    if (error?.message?.includes("Signature has expired")) {
+      alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+      logout();
+    }
+  }, [error, logout]);
 
-  if (error?.message?.includes("Signature has expired")) {
-    alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-    logout();
-  } else if (error) {
-    return <p>Error: {error.message}</p>;
-  }
-  
-  const companies = data.me.companies.edges.map(({ node }) => node);
+  if (loading) return <Loader />;
+  if (error) return <p>Error: {error.message}</p>;
+
+  // const companies = data.me.companies.edges.map(({ node }) => node);
 
   return (
     <>
       <Header />
-      <CompanyList companies={companies} />
+      <CompanyList companies={companies} setCompanies={setCompanies} />
     </>
   );
 };

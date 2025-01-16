@@ -4,10 +4,9 @@ import { MdOutlineEdit } from "react-icons/md";
 import { IoTime } from "react-icons/io5";
 import { FaFileUpload } from "react-icons/fa";
 
-const CompanyItem = (props) => {
-  const { id, name, created, importedFilesCount } = props.datos;
+const CompanyItem = ({ datos, setCompanies }) => {
+  const { id, name, created, importedFilesCount } = datos.node;
 
-  const [companyName, setCompanyName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEdit = () => {
@@ -16,38 +15,27 @@ const CompanyItem = (props) => {
 
   const handleBlur = (e) => {
     setIsEditing(false);
-    setCompanyName(e.target.value);
+    setCompanies((prev) =>
+      prev.map((company) =>
+        company.node.id === id
+          ? {
+              ...company,
+              node: {
+                ...company.node,
+                name: e.target.value,
+              },
+            }
+          : company
+      )
+    );
   };
 
-  // TODO - Form to edit the company name, calling this function
-  // const edit = (id, currentName) => {
-  //   const newName = prompt("Enter the new name of the company", currentName);
-  //   if (newName) {
-  //     setCompanyName((prev) => ({
-  //       ...prev,
-  //       [id]: newName,
-  //     }));
-  //   }
-  // };
-
   return (
-    <li
-      key={id}
-      className="flex items-center justify-between my-3 p-3 border-2 border-slate-200 rounded-md hover:bg-slate-100 shadow duration-300"
-    >
-      {/**
-       * TODO - Add a Link component to navigate to the company details page.
-       */}
-      {/* <Link
-        to={`/companies/${id}`}
-        className="text-blue-500 font-semibold text-lg hover:text-blue-800 duration-300"
-      >
-        {companyName[id] || name}
-      </Link> */}
+    <li className="flex items-center justify-between my-3 p-3 border-2 border-slate-200 rounded-md hover:bg-slate-100 shadow duration-300">
       {isEditing ? (
         <input
           type="text"
-          defaultValue={companyName}
+          defaultValue={name}
           onBlur={handleBlur}
           className="border-transparent bg-transparent focus:outline-none text-blue-500 font-semibold text-lg"
           autoFocus
@@ -57,7 +45,7 @@ const CompanyItem = (props) => {
           to={`/companies/${id}`}
           className="text-blue-500 font-semibold text-lg hover:text-blue-800 duration-300"
         >
-          {companyName}
+          {name}
         </Link>
       )}
       <div className="flex items-center gap-3">
@@ -73,7 +61,7 @@ const CompanyItem = (props) => {
         </p>
         <button
           className="px-4 py-1 border-2 rounded-md bg-blue-500 hover:bg-blue-700 duration-300 cursor-pointer"
-          onClick={() => handleEdit()}
+          onClick={handleEdit}
         >
           <MdOutlineEdit className="text-white" />
         </button>
