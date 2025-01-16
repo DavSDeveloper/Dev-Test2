@@ -31,7 +31,7 @@ const CompanyItem = ({ datos, setCompanies }) => {
   };
 
   return (
-    <li className="flex items-center justify-between my-3 p-3 border-2 border-slate-200 rounded-md hover:bg-slate-100 shadow duration-300">
+    <li className="flex flex-wrap items-center justify-between my-3 p-3 border-2 border-slate-200 rounded-md hover:bg-slate-100 shadow duration-300">
       {isEditing ? (
         <input
           type="text"
@@ -48,7 +48,7 @@ const CompanyItem = ({ datos, setCompanies }) => {
           {name}
         </Link>
       )}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <p className="flex items-center w-60 pr-3 text-slate-500">
           <IoTime className="mr-3 text-blue-500 text-lg" />
           {new Date(created).toLocaleString("es-CO", {
